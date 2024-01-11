@@ -1,4 +1,7 @@
 require("dotenv").config();
+require('./Models/products')
+require('./Models/user')
+require('./Models/profile')
 const express = require("express");
 const middleware_error = require("./Middlewares/error_handler.js/middlewares_error");
 const routes = require("./Routes/routes");

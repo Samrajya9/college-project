@@ -9,7 +9,7 @@ const get_password_from_database = (email) => {
         if (err) {
           reject(err);
         } else {
-          resolve(rows);
+          resolve(JSON.parse(JSON.stringify(rows[0])));
         }
       }
     );

@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "productsModelLocation":"cd MOdels",
+    "productsModel":"node products.js",
+    "createProdcutsModel":"npm run productsModelLocation && npm run productsModel",
     "test": "echo \"Error: no test specified\" && exit 1",
     "devStart": "nodemon app.js"
   },

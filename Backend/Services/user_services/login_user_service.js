@@ -10,25 +10,22 @@ const login_user_service = async (req, res) => {
     if (!req.body.email || !req.body.password) {
       throw new AppError("Incomplete details", 400);
     }
+
     // Getting required info from req.body
     const { email, password } = req.body;
 
-    // Checking if the email exitst or not
+    // Checking if the email exists or not
     const existing_user = await checking_existing_user(email);
     if (!existing_user) {
       throw new AppError("Email not found", 400);
     }
-    // Getting password from database
-    const dbPassword = await get_password_from_database(email);
 
-    // converting password into json format
-    const dbPasswordJSON = JSON.parse(JSON.stringify(dbPassword));
-
-    // JSON format password into string
-    const dbPasswordstring = dbPasswordJSON[0].password;
+    // Getting hashed password from the database
+    const dbPasswordString = (await get_password_from_database(email)).password;
 
     // Comparing the password
-    const matchPassword = await compare_password(password, dbPasswordstring);
+    const matchPassword = await compare_password(password, dbPasswordString);
+
     if (!matchPassword) {
       throw new AppError("Password not match", 400);
     } else {
@@ -43,6 +40,10 @@ const login_user_service = async (req, res) => {
         secure: false,
         sameSite: "strict", // Restrict cross-origin cookie sharing
       });
+
+      // Log relevant information (avoid logging sensitive data)
+      console.log(`User ${email} successfully logged in`);
+      
       return user_data;
     }
   } catch (error) {
