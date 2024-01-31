@@ -1,5 +1,6 @@
 const AppError = require("../../Error/custom_error");
 const read_csv_file_logic = require("../../Functions/csv/read_csv_file_logic");
+const convertToYearMonthDay = require("../../Functions/date/conver_to_db_date_format");
 const create_products_csv_logic = require("../../Functions/product/create_products_csv_logic");
 const create_products_logic = require("../../Functions/product/create_products_logic");
 
@@ -19,6 +20,14 @@ const create_products_cvs_service = async (req, res) => {
       for (const [key, value] of Object.entries(data)) {
         if (key === "quantity" || key === "price") {
           data[key] = parseInt(data[key]);
+        }
+      }
+      for (const [key, value] of Object.entries(data)) {
+        if (key === "mfg_date" || key === "exp_date") {
+          const dbvalue = convertToYearMonthDay(value)
+          // console.log(`Converting ${key} from ${value} to ${convertToYearMonthDay(value)} ${dbvalue}`);
+          // data[key] = convertToYearMonthDay(data[key])
+          data[key] = dbvalue;
         }
       }
       return data;
