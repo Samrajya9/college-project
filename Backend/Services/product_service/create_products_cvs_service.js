@@ -6,6 +6,7 @@ const create_products_logic = require("../../Functions/product/create_products_l
 const create_products_cvs_service = async (req, res) => {
   try {
     const file_path = req.body;
+    // console.log(`file_path = ${Object.values(file_path)[0]}`);
     // need to change how to take file path right taking it from json format from req.body which is an object and Object.values(file_path) return array
     const path = Object.values(file_path)[0];
     let csv_file_result = await read_csv_file_logic(path);
@@ -24,11 +25,14 @@ const create_products_cvs_service = async (req, res) => {
     });
     // Filter out elements where name is empty or batch_no is empty
     const filtered_data = array_of_data.filter(
-      (data) => !(data.name === "" || data.batch_no === "")
+      (data) => !(data.drug_name === "" || data.batch_no === "")
     );
+    console.log(`\n filtered data with data that donot contain drug name and batch no are filtered out`);
+    console.log(filtered_data);
     // apporach 1
     let results = [];
     for (const [index, data] of filtered_data.entries()) {
+      // console.log(data);
       const result = await create_products_logic(data);
       results.push(result);
     }

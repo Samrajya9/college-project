@@ -3,11 +3,13 @@ require('./Models/products')
 require('./Models/user')
 require('./Models/profile')
 const express = require("express");
+const cors = require('cors');
 const middleware_error = require("./Middlewares/error_handler.js/middlewares_error");
 const routes = require("./Routes/routes");
 const bodyParser = require("body-parser");
-const app = express();
 
+const app = express();
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 

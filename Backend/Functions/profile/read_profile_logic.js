@@ -8,7 +8,7 @@ const read_profile_logic = (user_id) => {
         reject(err);
       } else {
         const jsonresult = JSON.parse(JSON.stringify(result));
-        resolve(jsonresult[0]);
+        resolve(jsonresult);
       }
     });
   });

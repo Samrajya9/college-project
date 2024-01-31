@@ -15,10 +15,15 @@ const update_profile_service = async (req, res) => {
     if (result.affectedRows > 0) {
       const data = await verify_token(req, res);
       const user_id = data.id;
+      const email = data.email
       const result = await read_profile_logic(user_id);
-      return result;
+      const resp = {
+        data:result,
+        message:`Updated profile for user ${email}`
+      }
+      return resp;
     } else {
-      throw new AppError(`Cannot Update profile`, 400);
+      throw new AppError(`No such Profile exist Create a new profile`, 400);
     }
   } catch (error) {
     throw error;

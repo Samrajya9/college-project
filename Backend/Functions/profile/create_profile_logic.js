@@ -28,10 +28,7 @@ const create_profile_logic = (data, id) => {
         if (error) {
           reject(error);
         } else {
-          resolve({
-            msg: `User Profile cretaed successfully `,
-            result,
-          });
+          resolve( result);
         }
       }
     );

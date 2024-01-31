@@ -2,13 +2,12 @@ const connection = require("../../Models/connection");
 
 const update_products_logic = (data) => {
   return new Promise((resolve, reject) => {
-    let { id, name, batch_no, drug_name, mfg_date, exp_date, quantity, price } =
+    let { id, drug_name, batch_no,  mfg_date, exp_date, quantity, price } =
       data;
     const setValues = [];
     // Build the SET clause dynamically based on the provided data
-    if (name) setValues.push(`name='${name}'`);
-    if (batch_no) setValues.push(`batch_no='${batch_no}'`);
     if (drug_name) setValues.push(`drug_name='${drug_name}'`);
+    if (batch_no) setValues.push(`batch_no='${batch_no}'`);
     if (mfg_date) setValues.push(`mfg_date='${mfg_date}'`);
     if (exp_date) setValues.push(`exp_date='${exp_date}'`);
     if (quantity) setValues.push(`quantity=${quantity}`);
@@ -28,11 +27,12 @@ const update_products_logic = (data) => {
       if (error) {
         reject(error);
       } else {
-        const res_result = JSON.parse(JSON.stringify(result));
-        resolve({
-          res_result,
-          message: `Product update at id: ${id}`,
-        });
+        // const res_result = JSON.parse(JSON.stringify(result));
+        const resp ={
+          res_result:JSON.parse(JSON.stringify(result)),
+          message: `Product update at id: ${id}`
+        }
+        resolve(resp);
       }
     });
   });

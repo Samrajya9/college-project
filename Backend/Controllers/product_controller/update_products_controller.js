@@ -3,7 +3,11 @@ const update_products_service = require("../../Services/product_service/update_p
 
 const update_products_controller = error_handler(async (req, res, next) => {
   const result = await update_products_service(req, res);
-  res.status(201).json({ result });
+  res.status(201).json([{
+    resType: "Success",
+    message:result.message,
+    result
+  }])
 });
 
 module.exports = update_products_controller;

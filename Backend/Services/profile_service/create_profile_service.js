@@ -20,7 +20,11 @@ const create_profile_service = async (req, res) => {
       }
     });
     const result = await create_profile_logic(data, id);
-    return result;
+    const resp = {
+      data,
+      message :`User Profile cretaed successfully `
+    }
+    return resp;
   } catch (error) {
     throw error;
   }

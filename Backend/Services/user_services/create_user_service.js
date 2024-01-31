@@ -5,11 +5,11 @@ const insert_user = require("../../Functions/user/insert_user");
 
 const create_user_service = async (req, res) => {
   try {
+    console.log(req.body);
     // Checking if the req.body field are present or not
     if (!req.body.email || !req.body.password) {
       throw new AppError(`Incomplete details`, 400);
     }
-
     // Getting required info from req.body
     const data = { ...req.body };
     const exisiting_user = await checking_exisiting_user(data.email);
@@ -22,7 +22,8 @@ const create_user_service = async (req, res) => {
     data.password = hashed_password;
 
     const result = await insert_user(data);
-    return result;
+    
+    return {data:result,message:`Create user with email ${data.email}`};
   } catch (error) {
     throw error;
   }

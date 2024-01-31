@@ -30,7 +30,8 @@ const login_user_service = async (req, res) => {
       throw new AppError("Password not match", 400);
     } else {
       // Assiging token
-      const user_data = await get_user_data_by_email_or_data(email);
+      const data = await get_user_data_by_email_or_data(email);
+      const {password,...user_data}=data
       const access_token = await assign_jwt(user_data);
 
       // sending token on cookie
@@ -44,7 +45,10 @@ const login_user_service = async (req, res) => {
       // Log relevant information (avoid logging sensitive data)
       console.log(`User ${email} successfully logged in`);
       
-      return user_data;
+      return {
+        data:user_data,
+        message:`User ${email} successfully logged in`
+      };
     }
   } catch (error) {
     throw error;

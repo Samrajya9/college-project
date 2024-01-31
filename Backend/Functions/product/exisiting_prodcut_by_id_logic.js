@@ -1,13 +1,13 @@
 const connection = require("../../Models/connection");
 
-const existing_product_logic = (data) => {
-  // console.log(data);
-  const { drug_name, batch_no } = data;
-  const existingProductQuery = `SELECT * FROM products WHERE drug_name = ? AND batch_no = ?`;
+const exisiting_prodcut_by_id_logic = (data) => {
+  console.log(data);
+  const { id } = data;
+  const existingProductQuery = `SELECT * FROM products WHERE id = ? `;
   return new Promise((resolve, reject) => {
     connection.query(
       existingProductQuery,
-      [drug_name, batch_no],
+      [id],
       (error, result) => {
         if (error) {
           console.log(error);
@@ -21,4 +21,4 @@ const existing_product_logic = (data) => {
   });
 };
 
-module.exports = existing_product_logic;
+module.exports = exisiting_prodcut_by_id_logic;

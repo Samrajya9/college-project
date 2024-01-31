@@ -3,7 +3,11 @@ const logout_user_service = require("../../Services/user_services/logout_user_se
 
 const logout_user_controller = error_handler(async (req, res, next) => {
   const result = await logout_user_service(req, res);
-  res.status(201).json(result);
+  res.status(201).json([{
+    resType: "Success",
+    message:result.message,
+    result
+  }]);
 });
 
 module.exports = logout_user_controller;

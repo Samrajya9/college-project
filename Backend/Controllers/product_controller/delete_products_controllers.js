@@ -3,6 +3,9 @@ const delete_products_service = require("../../Services/product_service/delete_p
 
 const delete_products_controllers = error_handler(async (req, res, next) => {
   const result = await delete_products_service(req, res);
-  res.status(201).json({ result });
-});
+  res.status(201).json([{
+    resType: "Success",
+    message:result.message,
+    result
+  }])});
 module.exports = delete_products_controllers;

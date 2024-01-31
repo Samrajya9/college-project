@@ -7,11 +7,7 @@ const delete_products_logic = (id) => {
       if (error) {
         reject(error);
       } else {
-        if (result.affectedRows > 0) {
-          resolve({ message: `Product with id ${id} deleted` });
-        } else {
-          resolve({ message: `Product with id ${id} not found` });
-        }
+resolve(result)
       }
     });
   });

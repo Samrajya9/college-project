@@ -11,6 +11,8 @@ const update_products_controller = require("../Controllers/product_controller/up
 const delete_products_controllers = require("../Controllers/product_controller/delete_products_controllers");
 const logout_user_controller = require("../Controllers/user_controller/logout_user_controller");
 const create_products_cvs_controller = require("../Controllers/product_controller/create_products_cvs_controller");
+const upload = require("../Middlewares/multer/multer");
+
 
 const routes = require("express").Router();
 // user routes
@@ -24,13 +26,16 @@ routes.get("/read_profile", read_profile_controller);
 routes.patch("/update_profile/:id", update_profile_controller);
 
 // admin routes
-routes.get("/read_users", read_users_controller);
-routes.delete("/delete_users", delete_users_controller);
+routes.get("/read_all_users", read_users_controller);
+routes.delete("/delete_user/:userId", delete_users_controller);
 
 // Products routes
 routes.post("/create_products", create_products_controller);
-routes.post("/create_products_cvs", create_products_cvs_controller);
+routes.post("/multer",upload.array('files',3),(req,res)=>{
+    res.json(req.files)
+})
+routes.post("/create_products_cvs",create_products_cvs_controller);
 routes.get("/read_products", read_products_controller);
 routes.put("/update_products", update_products_controller);
-routes.delete("/delete_products", delete_products_controllers);
+routes.delete("/delete_products/:ProductId", delete_products_controllers);
 module.exports = routes;

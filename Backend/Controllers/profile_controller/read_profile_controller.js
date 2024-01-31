@@ -3,6 +3,10 @@ const read_profile_service = require("../../Services/profile_service/read_profil
 
 const read_profile_controller = error_handler(async (req, res, next) => {
   const result = await read_profile_service(req, res);
-  res.status(201).json(result);
+  res.status(201).json([{
+    resType: "Success",
+    message:result.message,
+    result
+  }]);
 });
 module.exports = read_profile_controller;

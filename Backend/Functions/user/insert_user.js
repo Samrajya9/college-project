@@ -9,6 +9,8 @@ const insert_user = async (data) => {
         reject(err);
       } else {
         resolve({
+          id:`${rows.insertId}`,
+          email,
           msg: `User created successfully with an id ${rows.insertId} `,
         });
       }

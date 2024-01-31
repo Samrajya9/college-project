@@ -3,7 +3,12 @@ const create_products_service = require("../../Services/product_service/create_p
 
 const create_products_controller = error_handler(async (req, res, next) => {
   const result = await create_products_service(req, res);
-  res.status(201).json(result);
+  
+  res.status(201).json([{
+    resType: "Success",
+    message:result.message,
+    result
+  }]);
 });
 
 module.exports = create_products_controller;

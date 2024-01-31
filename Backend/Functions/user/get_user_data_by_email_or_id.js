@@ -10,7 +10,7 @@ const get_user_data_by_email_or_data = async (parameter) => {
   }
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT id, email FROM users WHERE ${setparameter} = ?`,
+      `SELECT * FROM users WHERE ${setparameter} = ?`,
       [parameter],
       (err, rows) => {
         if (err) {

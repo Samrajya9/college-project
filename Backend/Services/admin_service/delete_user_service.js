@@ -4,7 +4,12 @@ const delete_user_logic = require("../../Functions/user/admin/delete_user_logic"
 
 const delete_user_service = async (req, res) => {
   try {
-    const user_id = req.body.id;
+    const user_id = req.params.userId; // Assuming the user ID is part of the URL parameters
+
+    // Ensure that user_id is a valid value
+    if (!user_id) {
+      throw new AppError("Invalid or missing user ID in the URL parameters", 400);
+    }
 
     const delete_profile_logic_result = await delete_profile_logic(user_id);
     const delete_user_logic_result = await delete_user_logic(user_id);
@@ -12,10 +17,11 @@ const delete_user_service = async (req, res) => {
       delete_profile_logic_result.affectedRows > 0 &&
       delete_user_logic_result.affectedRows > 0
     ) {
-      return {
-        delete_user_logic_result,
-        delete_user_logic_result,
-      };
+      const resp = {
+        data:{},
+        message:`User deleted with id ${user_id}`
+      }
+      return resp;
     } else {
       throw new AppError("Failed to delete user no such user exists ", 400);
     }
@@ -23,5 +29,4 @@ const delete_user_service = async (req, res) => {
     throw error;
   }
 };
-
 module.exports = delete_user_service;
