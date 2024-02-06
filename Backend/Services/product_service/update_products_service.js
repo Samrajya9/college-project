@@ -5,7 +5,9 @@ const update_products_logic = require("../../Functions/product/update_products_l
 
 const update_products_service = async (req, res) => {
   try {
-    const data = { ...req.body };
+    const id = req.params.ProductId;
+    const data = { ...req.body,id};
+    console.log(data);
     for (const [key, value] of Object.entries(data)) {
       if (key == "id" || key === "quantity" || key === "price") {
         data[key] = parseInt(data[key]);

@@ -1,12 +1,12 @@
 const connection = require("../../Models/connection");
 
-const read_products_logic = () => {
+const read_one_product_logic = (ProductId) => {
   return new Promise(async (resolve, reject) => {
 
     async function read_products() {
       return new Promise((resolve, reject) => {
-        const read_query = `SELECT * FROM products`;
-        connection.query(read_query, (error, result) => {
+        const read_query = 'SELECT * FROM products WHERE id = ?';
+        connection.query(read_query,[ProductId] ,(error, result) => {
           if (error) {
             reject(error);
           } else {
@@ -18,8 +18,8 @@ const read_products_logic = () => {
 
     async function read_product_log() {
       return new Promise((resolve, reject) => {
-        const read_query = `SELECT * FROM product_log`;
-        connection.query(read_query, (error, result) => {
+        const read_query = `SELECT * FROM product_log WHERE product_id =?`;
+        connection.query(read_query,[ProductId] , (error, result) => {
           if (error) {
             reject(error);
           } else {
@@ -39,4 +39,4 @@ const read_products_logic = () => {
   });
 };
 
-module.exports = read_products_logic;
+module.exports = read_one_product_logic;

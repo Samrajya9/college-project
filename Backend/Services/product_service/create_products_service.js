@@ -14,7 +14,7 @@ const create_products_service = async (req, res) => {
     for (const [key, value] of Object.entries(data)) {
       if (key === "mfg_date" || key === "exp_date") {
         const dbvalue = convertToYearMonthDay(value)
-        // console.log(`Converting ${key} from ${value} to ${convertToYearMonthDay(value)} ${dbvalue}`);
+        console.log(`Converting ${key} from ${value} to ${convertToYearMonthDay(value)} `);
         // data[key] = convertToYearMonthDay(data[key])
         data[key] = dbvalue;
       }
@@ -26,6 +26,7 @@ const create_products_service = async (req, res) => {
     }
 
     const result = await create_products_logic(data);
+    console.log(result);
     if(result.message ==`Quantity updated for existing product`){
       const resp = {
         data:productDetails,
@@ -34,9 +35,12 @@ const create_products_service = async (req, res) => {
       return resp ;
     }else{
       const resp = {
-        data:result.productDetails,
-        message:result.message
+        data:result.result_add_product.productDetails,
+        product_log_id: result.result_add_product_log.product_log_id,
+        message:result.result_add_product.message
+       
       }
+      
       return resp;
     }  
   } catch (error) {

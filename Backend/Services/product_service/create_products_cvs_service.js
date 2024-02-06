@@ -47,6 +47,7 @@ const create_products_cvs_service = async (req, res) => {
     }
     // apporach 2
     // const result = await create_products_csv_logic(csv_file_result);
+    console.log(results);
     return results;
   } catch (error) {
     throw error;

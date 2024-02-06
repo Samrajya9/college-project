@@ -22,8 +22,12 @@ const create_user_service = async (req, res) => {
     data.password = hashed_password;
 
     const result = await insert_user(data);
+    const resp = {
+      data:result,
+      message:`Create user with email ${data.email}`
+    }
     
-    return {data:result,message:`Create user with email ${data.email}`};
+    return resp;
   } catch (error) {
     throw error;
   }

@@ -10,7 +10,7 @@ const update_products_logic = (data) => {
     if (batch_no) setValues.push(`batch_no='${batch_no}'`);
     if (mfg_date) setValues.push(`mfg_date='${mfg_date}'`);
     if (exp_date) setValues.push(`exp_date='${exp_date}'`);
-    if (quantity) setValues.push(`quantity=${quantity}`);
+    if (quantity||quantity == 0) setValues.push(`quantity=${quantity}`);
     if (price) setValues.push(`price=${price}`);
 
     // Ensure there are fields to update
@@ -22,7 +22,7 @@ const update_products_logic = (data) => {
     const update_query = `UPDATE products SET ${setValues.join(
       ", "
     )} WHERE id=${id}`;
-
+console.log(update_query);
     connection.query(update_query, (error, result) => {
       if (error) {
         reject(error);

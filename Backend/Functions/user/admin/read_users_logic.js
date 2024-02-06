@@ -5,6 +5,7 @@ const read_users_logic = () => {
       SELECT 
   users.id AS prim_user_id,
   users.email,
+  users.roles,
   profiles.id AS profile_id,
   profiles.first_name,
   profiles.middle_name,
@@ -28,6 +29,7 @@ LEFT JOIN
           users: {
             id: rows.prim_user_id,
             email: rows.email,
+            roles: rows.roles
           },
           profile: {
             id: rows.profile_id,

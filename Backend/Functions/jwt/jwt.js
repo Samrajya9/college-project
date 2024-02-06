@@ -11,12 +11,11 @@ async function assign_jwt(playload) {
 
 async function verify_token(req, res) {
   const headers = req.headers.cookie;
-  const token = headers.split("=")[1];
-  // console.log(token[1]);
   try {
-    if (!token) {
+    if (!headers) {
       throw new AppError(`Unauthorized`, 401);
     }
+    const token = headers.split("=")[1];
     // Verify the token using your secret key
     const decoded = await jwt.verify(token, secret);
     // Attach the decoded payload to the request object for further use

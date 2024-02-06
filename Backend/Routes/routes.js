@@ -12,6 +12,10 @@ const delete_products_controllers = require("../Controllers/product_controller/d
 const logout_user_controller = require("../Controllers/user_controller/logout_user_controller");
 const create_products_cvs_controller = require("../Controllers/product_controller/create_products_cvs_controller");
 const upload = require("../Middlewares/multer/multer");
+const read_one_product_controller = require("../Controllers/product_controller/read_one_product_controller");
+const update_user_controller = require("../Controllers/admin_controller/update_user_controller");
+const isLogin = require("../Middlewares/isLogin");
+const isAdmin = require("../Middlewares/isAdmin");
 
 
 const routes = require("express").Router();
@@ -26,16 +30,21 @@ routes.get("/read_profile", read_profile_controller);
 routes.patch("/update_profile/:id", update_profile_controller);
 
 // admin routes
-routes.get("/read_all_users", read_users_controller);
+routes.get("/read_all_users/:user_id?", read_users_controller);
 routes.delete("/delete_user/:userId", delete_users_controller);
+routes.patch("/update_user/:id", update_user_controller);
+
 
 // Products routes
 routes.post("/create_products", create_products_controller);
-routes.post("/multer",upload.array('files',3),(req,res)=>{
-    res.json(req.files)
-})
+// routes.post("/multer",upload.array('files',3),(req,res)=>{
+//     res.json(req.files)
+// })
 routes.post("/create_products_cvs",create_products_cvs_controller);
-routes.get("/read_products", read_products_controller);
-routes.put("/update_products", update_products_controller);
+
+routes.get("/read_products/:ProductId?", read_products_controller);
+routes.get('/read_one_product/:ProductId',read_one_product_controller)
+
+routes.put("/update_products/:ProductId", update_products_controller);
 routes.delete("/delete_products/:ProductId", delete_products_controllers);
 module.exports = routes;

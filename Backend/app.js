@@ -2,6 +2,7 @@ require("dotenv").config();
 require('./Models/products')
 require('./Models/user')
 require('./Models/profile')
+require('./Models/product_log')
 const express = require("express");
 const cors = require('cors');
 const middleware_error = require("./Middlewares/error_handler.js/middlewares_error");

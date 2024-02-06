@@ -13,8 +13,10 @@ const delete_user_service = async (req, res) => {
 
     const delete_profile_logic_result = await delete_profile_logic(user_id);
     const delete_user_logic_result = await delete_user_logic(user_id);
+    console.log(delete_profile_logic_result);
+    console.log(delete_user_logic_result);
     if (
-      delete_profile_logic_result.affectedRows > 0 &&
+      // delete_profile_logic_result.affectedRows > 0 &&
       delete_user_logic_result.affectedRows > 0
     ) {
       const resp = {

@@ -10,5 +10,4 @@ const create_products_controller = error_handler(async (req, res, next) => {
     result
   }]);
 });
-
 module.exports = create_products_controller;

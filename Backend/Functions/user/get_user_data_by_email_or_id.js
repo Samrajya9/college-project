@@ -3,10 +3,10 @@ const connection = require("../../Models/connection");
 const get_user_data_by_email_or_data = async (parameter) => {
   let setparameter;
   if (typeof parameter == `string`) {
-    setparameter = `EMAIL`;
+    setparameter = `email`;
   }
   if (typeof parameter == `number`) {
-    setparameter = `ID`;
+    setparameter = `id`;
   }
   return new Promise((resolve, reject) => {
     connection.query(
