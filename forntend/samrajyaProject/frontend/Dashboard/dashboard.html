@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css" />
+    <script type="module" src="./js/about_to_be_expire_logic.js"></script>
+    <script type="module" src="./js/expired_stock_logic.js"></script>
+    <script type="module" src="./js/going_out_of_stock_logic.js"></script>
+    <script type="module" src="./js/out_of_stock_logic.js"></script>
+    <script
+      type="module"
+      src="./js/number_of_recently_added_products.js"
+    ></script>
+    <script type="module" src="../logic/loggedin.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Dashboard</h1>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="#" class="active">Dashboard</a></li>
+        <li><a href="../AddMedicine/addMedicine.html">Add Medicine</a></li>
+        <li><a href="../ReadMedicine/readMedicine.html">Read Medicine</a></li>
+        <li><a href="../Admin/admin.html" class="admin">Admin</a></li>
+        <li id="logout">Log Out</li>
+      </ul>
+    </nav>
+
+    <div class="container">
+      <div class="small-card">
+        <h2>Total Products</h2>
+        <p id="total_product_no"></p>
+      </div>
+      <div class="small-card">
+        <h2>Going Out of Stock</h2>
+        <p id="going_out_of_stock"></p>
+      </div>
+      <div class="small-card">
+        <h2>Out of Stock</h2>
+        <p id="out_of_stock"></p>
+      </div>
+      <div class="small-card">
+        <h2>Expired Products</h2>
+        <p id="expired_prodcuts"></p>
+      </div>
+      <div class="small-card">
+        <h2>About to expire</h2>
+        <p id="about_to_expire"></p>
+      </div>
+
+      <div class="recently-added small-card">
+        <h2>Recently Added Products</h2>
+        <div class="card-content">
+          <table>
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Batch Number</th>
+                <th>Date Added</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="calendar">
+        <h2>Product Additions Calendar</h2>
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" />
+        <p>Products Added: <span id="productCount"></span></p>
+      </div>
+    </div>
+
+    <script type="module">
+      import { expired_stock_logic } from "./js/expired_stock_logic.js"
+      import { about_to_be_expire_logic } from "./js/about_to_be_expire_logic.js"
+      import { going_out_of_stock_logic } from "./js/going_out_of_stock_logic.js"
+      import { out_of_stock_logic } from "./js/out_of_stock_logic.js"
+      import { number_of_recently_added_products } from "./js/number_of_recently_added_products.js"
+      import { isloggedIn } from "../logic/loggedin.js"
+
+      const dateInput = document.getElementById("date")
+      const productCountElement = document.getElementById("productCount")
+      const total_product_no = document.querySelector("#total_product_no")
+      const about_to_expire = document.querySelector("#about_to_expire")
+      const expired_prodcuts = document.querySelector("#expired_prodcuts")
+      const going_out_of_stock = document.querySelector("#going_out_of_stock")
+      const out_of_stock = document.querySelector("#out_of_stock")
+      const tbody = document.querySelector("#tbody")
+
+      async function fetchDb() {
+        const result = await fetch("http://localhost:3000/read_products")
+        const responseData = await result.json()
+        return responseData[0]
+      }
+
+      function updateProductCount(date, product, product_log) {
+        // Update the selectedDate variable when the date changes
+        const selectedDate = date
+        const recent_added_products = number_of_recently_added_products(
+          selectedDate,
+          product,
+          product_log
+        )
+        productCountElement.innerHTML = recent_added_products.length
+        tbody.innerHTML = ``
+        recent_added_products.map((product) => {
+          const content = `
+                        <tr>
+                            <td>${product.drug_name}</td>
+                            <td>${product.batch_no}</td>
+                            <td>${selectedDate}</td>
+                        </tr>
+            `
+          tbody.innerHTML += content
+        })
+        return recent_added_products
+      }
+
+      // Define an async function to encapsulate the logic
+      async function fetchDataAndProcess() {
+        try {
+          const result = await fetchDb()
+          alert(result.message)
+          console.log(result)
+          const data = result.result.data
+          const date = new Date()
+          const current_date = `${date.getFullYear()}-${(date.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`
+          dateInput.value = current_date
+
+          updateProductCount(dateInput.value, data.product, data.product_log)
+          dateInput.addEventListener("change", function () {
+            updateProductCount(dateInput.value, data.product, data.product_log)
+          })
+
+          const total_no_of_products = data.product.length
+          total_product_no.innerHTML = total_no_of_products
+
+          const number_of_going_out_of_stock_products =
+            going_out_of_stock_logic(data.product)
+          going_out_of_stock.innerHTML =
+            number_of_going_out_of_stock_products.length
+
+          const number_of_out_stock_products = out_of_stock_logic(data.product)
+          out_of_stock.innerHTML = number_of_out_stock_products.length
+
+          const number_of_expired_prodcuts = expired_stock_logic(data.product)
+          expired_prodcuts.innerHTML = number_of_expired_prodcuts.length
+
+          const number_of_expiring_products = about_to_be_expire_logic(
+            data.product
+          )
+          about_to_expire.innerHTML = number_of_expiring_products.length
+        } catch (error) {
+          console.error("Error:", error)
+        }
+      }
+
+      // Call the async function immediately
+      if (isloggedIn()) {
+        fetchDataAndProcess()
+      }
+    </script>
+  </body>
+</html>

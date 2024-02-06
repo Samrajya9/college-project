@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Medicine</title>
+    <link rel="stylesheet" href="updateMedicine.css" />
+    <script type="module" src="../logic/convert_data_format.js"></script>
+    <script type="module">
+      import { isloggedIn } from "../../logic/loggedin.js"
+      isloggedIn()
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>Edit Medicine</h1>
+    </header>
+
+    <nav>
+      <ul>
+        <li><a href="../Dashboard/dashboard.html">Dashboard</a></li>
+        <li><a href="../AddMedicine/addmedicine.html">Add Medicine</a></li>
+        <li><a href="../ReadMedicine/readMedicine.html">Read Medicine</a></li>
+        <li><a href="../Admin/admin.html">Admin</a></li>
+      </ul>
+    </nav>
+
+    <div class="container">
+      <div class="edit-medicine-card">
+        <h2>Edit Medicine</h2>
+        <form id="edit_medicine_form" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="drug_name">Medicine Name:</label>
+            <input type="text" id="drug_name" name="drug_name" />
+          </div>
+          <div class="form-group">
+            <label for="batch_no">Batch_no:</label>
+            <input type="text" id="batch_no" name="batch_no" />
+          </div>
+          <div class="form-group">
+            <label for="mfg_date">Manufacture Date:</label>
+            <input type="date" id="mfg_date" name="mfg_date" />
+          </div>
+          <div class="form-group">
+            <label for="exp_date">Expiry Date:</label>
+            <input type="date" id="exp_date" name="exp_date" />
+          </div>
+          <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" />
+          </div>
+          <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" />
+          </div>
+          <!-- <div class="form-group">
+                <label for="medicine-photo">Medicine Photo:</label>
+                <input type="file" id="medicine-photo" name="medicine-photo" accept="image/*">
+            </div> -->
+          <button type="submit">Update Medicine</button>
+        </form>
+      </div>
+    </div>
+
+    <script type="module">
+      import { convertToYearMonthDay } from "../logic/convert_data_format.js"
+      import { fetchDB } from "./js/fetchDB.js"
+      import { updateDB } from "./js/updateDB.js"
+      // Fetch medicine details from server and pre-fill the form fields for editing
+      const edit_medicine_form = document.querySelector("#edit_medicine_form")
+      // Get the query parameters from the URL
+      const urlParams = new URLSearchParams(window.location.search)
+
+      // Get the value of the 'id' parameter
+      const productId = urlParams.get("id")
+
+      window.onload = async function () {
+        const result = await fetchDB(productId)
+        const data = result.result.data.product[0]
+        document.getElementById("drug_name").value = data.drug_name
+        document.getElementById("batch_no").value = data.batch_no
+        document.getElementById("mfg_date").value = convertToYearMonthDay(
+          data.mfg_date
+        )
+        document.getElementById("exp_date").value = convertToYearMonthDay(
+          data.exp_date
+        )
+        document.getElementById("quantity").value = data.quantity
+        document.getElementById("price").value = data.price
+      }
+
+      edit_medicine_form.addEventListener("submit", async (event) => {
+        event.preventDefault()
+        const form_data = new FormData(edit_medicine_form)
+        const data = Object.fromEntries(form_data)
+        const req_data = JSON.stringify(data)
+        const result = await updateDB(productId, req_data)
+        const responseData = result[0]
+        alert(result.message)
+        window.location.href = "../AddMedicine/addMedicine.html"
+      })
+    </script>
+  </body>
+</html>

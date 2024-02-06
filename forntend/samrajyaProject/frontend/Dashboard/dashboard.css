@@ -1,0 +1,124 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+}
+
+nav {
+    background-color: #333;
+    color: #fff;
+    height: 100vh;
+    width: 300px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    padding: 10px 20px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+}
+
+nav ul li a.active {
+    background-color: #555;
+}
+
+p {
+    font-size: x-large;
+    font-weight: 200;
+}
+
+.container {
+    margin-left: 20%; /* Adjust according to navbar width */
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.small-card {
+    width: 16%;
+    /* height: fit-content; */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.recently-added {
+    width: calc(60% - 38px); /* Adjust width */
+    margin-top: 20px;
+    text-align: center;
+}
+
+.card-content {
+    padding: 15px;
+}
+
+.recently-added table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.recently-added th, .recently-added td {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+.recently-added th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.calendar {
+    width: calc(36% - 20px); /* Adjust width */
+    height: 230px;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.calendar h2 {
+    margin-top: 0;
+}
+
+.calendar input[type="date"] {
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 8px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #555;
+}

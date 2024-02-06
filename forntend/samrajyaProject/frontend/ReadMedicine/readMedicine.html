@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Read Medicine</title>
+    <link rel="stylesheet" href="readmedicine.css" />
+    <style>
+      /* Add the styles from the previous response here */
+      .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 0;
+      }
+
+      .pagination-container button {
+        padding: 10px;
+        margin: 0 5px;
+        cursor: pointer;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+      }
+
+      .pagination-container button:disabled {
+        background-color: #555;
+        cursor: not-allowed;
+      }
+    </style>
+    <script type="module" src="../logic/loggedin.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Read Medicine</h1>
+    </header>
+
+    <nav>
+      <ul>
+        <li><a href="../Dashboard/dashboard.html">Dashboard</a></li>
+        <li><a href="../AddMedicine/addMedicine.html">Add Medicine</a></li>
+        <li><a href="#" class="active">Read Medicine</a></li>
+        <li><a href="../Admin/admin.html">Admin</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div class="medicine-cards-container" id="medicineCardsContainer">
+        <!-- Medicine cards will be dynamically added here -->
+      </div>
+      <div class="medicine-details-card">
+        <h2>Selected Medicine Details</h2>
+        <div class="medicine-details-content">
+          <div id="selected-medicine-image"></div>
+          <div id="selected-medicine-details"></div>
+        </div>
+      </div>
+    </div>
+    <div class="pagination-container" id="paginationContainer"></div>
+
+    <script type="module" defer>
+      import { convertToYearMonthDay } from "../logic/convert_data_format.js"
+      import { fetchDB } from "../AddMedicine/js/fetchDB.js"
+      import { deleteDatafromDB } from "../AddMedicine/js/deleteDatafromDB.js"
+
+      const container = document.getElementById("medicineCardsContainer")
+      const detailsDiv = document.getElementById("selected-medicine-details")
+      const paginationContainer = document.getElementById("paginationContainer")
+      const itemsPerPage = 6
+
+      function displayPagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage)
+        paginationContainer.innerHTML = ""
+
+        for (let i = 1; i <= totalPages; i++) {
+          const button = document.createElement("button")
+          button.textContent = i
+          button.addEventListener("click", () => handlePageClick(i))
+          paginationContainer.appendChild(button)
+        }
+      }
+
+      async function dynamic_card(page = 1) {
+        const data = await fetchDB()
+        const result = data.result.data
+        const startIndex = (page - 1) * itemsPerPage
+        const endIndex = startIndex + itemsPerPage
+        const itemsToDisplay = result.product.slice(startIndex, endIndex)
+        const table_details = itemsToDisplay.map((element) => {
+          const content = `
+          <div class="medicine-card" id="medicine_card" data-id="${
+            element.id
+          }" data-name="${element.drug_name}" data-batch_no="${
+            element.batch_no
+          }" data-exp_date="${element.exp_date}" data-mfg_date="${
+            element.mfg_date
+          }" data-quantity="${element.quantity}" data-price="${element.price}">
+
+                <div class="medicine-details">
+                    <p id ="product_id"style="display: none;" > ${
+                      element.id
+                    }</p>
+                    <h2>${element.drug_name}</h2>
+                    <p><strong>Batch_number:</strong> ${element.batch_no}</p>
+                    <p><strong>Expiry Date:</strong> ${convertToYearMonthDay(
+                      element.exp_date
+                    )}</p>
+                    <p><strong>Price:</strong> Nrs. ${element.price}</p>
+                </div>
+            </div>`
+
+          return content
+        })
+        displayPagination(result.product.length)
+        return table_details // or return result.product if you want to return the entire array
+      }
+
+      async function handlePageClick(page) {
+        container.innerHTML = ""
+        const content = await dynamic_card(page)
+        container.innerHTML += content
+
+        return content
+      }
+
+      function showDetails(
+        id,
+        name,
+        batch_no,
+        expiryDate,
+        mfg_date,
+        quantity,
+        price
+      ) {
+        const details = `
+        <p><strong>Medicine Name:</strong> ${name}</p>
+        <p><strong>Batch_number:</strong> ${batch_no}</p>
+        <p><strong>Expiry Date:</strong> ${expiryDate}</p>
+        <p><strong>Manufacture Date:</strong> ${mfg_date}</p>
+        <p><strong>Quantity:</strong> ${quantity}</p>
+        <p><strong>Price:</strong> ${price}</p>
+        <button id="btn"><a href="../UpdateMedicine/updateMedicine.html?id=${id}">Edit</a></button>
+        <button class="delete_product_btn" data-product_id="${id}">Delete</button>
+  `
+        detailsDiv.innerHTML = details
+        const deleteProductBtn = detailsDiv.querySelector(".delete_product_btn")
+        deleteProductBtn.addEventListener("click", async () => {
+          console.log(deleteProductBtn.dataset)
+          const productId = deleteProductBtn.dataset.product_id
+          const result = await deleteDatafromDB(productId)
+          alert(result.message)
+          location.reload()
+        })
+      }
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        await handlePageClick()
+
+        const medicineCards = document.querySelectorAll(".medicine-card")
+        medicineCards.forEach((card) => {
+          card.addEventListener("click", (event) => {
+            const { id, name, batch_no, exp_date, mfg_date, quantity, price } =
+              card.dataset
+            showDetails(
+              id,
+              name,
+              batch_no,
+              convertToYearMonthDay(exp_date),
+              convertToYearMonthDay(mfg_date),
+              quantity,
+              price
+            )
+          })
+        })
+      })
+    </script>
+  </body>
+</html>

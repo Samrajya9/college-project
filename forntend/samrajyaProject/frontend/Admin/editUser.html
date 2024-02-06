@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Update User</title>
+<link rel="stylesheet" href="editUser.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<header>
+    <h1>Update User</h1>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="../Dashboard/dashboard.html">Dashboard</a></li>
+        <li><a href="../AddMedicine/addMedicine.html">Add Medicine</a></li>
+        <li><a href="../ReadMedicine/readmedicine.html">Read Medicine</a></li>
+        <li><a href="#" class="active">Admin</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="update-user-card" >
+        <form id="update_user_form" enctype="multipart/form-data">
+            <!-- <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" >
+            </div> -->
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="role">Role:</label>
+                <select id="roles" name="roles" required>
+                    <option value="admin">admin</option>
+                    <option value="pharmacist">pharmacist</option>
+                </select>
+            </div>
+            <button type="submit" id="update_btn">Update</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const update_user_form = document.querySelector('#update_user_form')
+        // Get the query parameters from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+    // Get the value of the 'id' parameter
+    const id = urlParams.get('user_id');
+        async function fetchData(id){
+        const result = await fetch(`http://localhost:3000/read_all_users/${id}`);
+        const responseData = await result.json();
+        const data = responseData[0].result.data;
+        return data;
+    }
+    window.onload =async function(){    
+
+    const result = await fetchData(id);
+    // document.getElementById('name').value = result.profile.first_name
+    document.getElementById('email').value = result.users.email
+    document.getElementById('roles').value= result.users.roles
+   
+};
+update_user_form.addEventListener('submit',async()=>{
+    event.preventDefault();
+    const form_data = new FormData(update_user_form);
+    const data = Object.fromEntries(form_data);
+    const {name, ...user_data} =data
+    // console.log(id);
+    console.log(user_data);
+    const req_data = JSON.stringify(user_data);
+    const result = await fetch(`http://localhost:3000/update_user/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: req_data
+    });
+    const responseData = await result.json();
+    console.log(responseData[0].message);
+    alert(responseData[0].message);
+    window.location.href = './admin.html'
+
+})
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <script type="module" src="./password_validation.js"></script>
+    <link rel="stylesheet" href="signUp.css" />
+  </head>
+  <body>
+    <div class="signup-container">
+      <form class="signup-form" id="signup-form">
+        <h2>Sign Up</h2>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            autocomplete="email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <div class="form-group">
+          <label for="confirm_password">Confirm Password:</label>
+          <input
+            type="password"
+            id="confirm_password"
+            name="confirm_password"
+            required
+          />
+        </div>
+        <div class="form-group" style="display: none">
+          <label for="roles">roles:</label>
+          <input type="text" id="roles" name="roles" value="pharmacist" />
+        </div>
+        <button type="submit" id="signup-btn">Sign Up</button>
+        <p>Already have an account? <a href="/Login/login.html">Log In</a></p>
+      </form>
+    </div>
+
+    <script type="module">
+      import { validatePassword } from "./password_validation.js"
+      const signup_form = document.querySelector("#signup-form")
+
+      const fetchDB = async (data) => {
+        const result = await fetch("http://localhost:3000/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: data,
+        })
+        const responseData = await result.json()
+        return responseData[0]
+      }
+
+      signup_form.addEventListener("submit", async (event) => {
+        event.preventDefault()
+        const form_data = new FormData(signup_form)
+        const data = Object.fromEntries(form_data)
+
+        if (data.password !== data.confirm_password) {
+          alert("Password and Confirm Password didn't match")
+        } else {
+          if (validatePassword(data.password)) {
+            console.log("valid password")
+            try {
+              const { confirm_password, ...des_data } = data
+              const req_data = JSON.stringify(des_data)
+              const result = await fetchDB(req_data)
+              const responseData = await result
+              console.log(responseData)
+              alert(responseData.message)
+              window.location.href = "/Login/login.html"
+            } catch (error) {
+              console.error("Error:", error)
+            }
+          } else {
+            console.log("Invalid password")
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

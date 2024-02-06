@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin</title>
+<link rel="stylesheet" href="admin.css">
+<script> 
+    const email = window.localStorage.getItem('email')
+    const roles = window.localStorage.getItem('role')
+    if(!email || !roles){
+        window.location.href="/Login/login.html"
+    }if(roles !== 'admin'){
+        window.location.href="/Dashboard/dashboard.html"
+        
+    }
+</script>
+</head>
+<body>
+
+<header>
+    <h1>Admin</h1>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="../Dashboard/dashboard.html">Dashboard</a></li>
+        <li><a href="../AddMedicine/addMedicine.html">Add Medicine</a></li>
+        <li><a href="../ReadMedicine/readmedicine.html">Read Medicine</a></li>
+        <li><a href="#" class="active admin">Admin</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="card">
+        <h2>Users</h2>
+        <table>
+            <thead>
+                <tr>
+
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const tbody = document.getElementById('tbody');
+
+    const  fetchdata = async()=>{
+    const result = await fetch('http://localhost:3000/read_all_users');
+    const responseData = await result.json()
+    alert(responseData[0].message)    
+    const data = responseData[0].result.data;
+    return data;
+    };
+    async function insertdata() {
+        const data = await fetchdata();
+        console.log(data);
+        const table_details = data.map(element=>{
+            return  `
+            <tr>
+                    <td id="user.id" style="display: none;">${element.users.id}</td>
+
+                    <td>${element.users.email}</td>
+                    <td>${element.users.roles}</td>
+                    <td>
+                        <button><a href="./editUser.html?user_id=${element.users.id}&name=${element.profile.first_name} ${element.profile.middle_name} ${element.profile.last_name}">Update</a></button>
+                        <button id="delete_user_btn">Delete</button>
+                    </td>
+                </tr>
+            `
+        })
+        return table_details;
+    }
+    const dataintotable = async()=>{
+        const content = await  insertdata();
+        tbody.innerHTML=``;
+        tbody.innerHTML +=content.join('')
+        return tbody.innerHTML
+    }
+    window.onload =async()=>{
+        await dataintotable()
+        const delete_user_btn = document.querySelectorAll('#delete_user_btn');
+        console.log(delete_user_btn);
+        delete_user_btn.forEach(button=>{
+            button.addEventListener('click',async()=>{
+            const closestTR = button.closest("tr");
+            const userid  =closestTR.cells[0].textContent
+            const result = await fetch(`http://localhost:3000/delete_user/${userid}`,
+            {
+                method:"DELETE"
+            })  
+            const responseData = await result.json();
+            alert(responseData[0].message)
+            location.reload();
+            })
+        })
+            
+        };
+    
+
+    
+
+ 
+</script>
+
+</body>
+</html>

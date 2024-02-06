@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css" />
+    <script type="module" src="../SignUp/password_validation.js"></script>
+  </head>
+  <body>
+    <div class="login-container">
+      <form class="login_form" id="login_form">
+        <h2>Login</h2>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="text" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="/SignUp/signUp.html">Sign Up</a></p>
+      </form>
+    </div>
+
+    <script type="module">
+      import { validatePassword } from "../SignUp/password_validation.js"
+      import { getCookie } from "../logic/loggedin.js"
+      const login_form = document.querySelector("#login_form")
+
+      const fetchDB = async (req_data) => {
+        const result = await fetch("http://localhost:3000/signin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: req_data,
+        })
+        const responseData = await result.json()
+        return responseData[0]
+      }
+      login_form.addEventListener("submit", async (event) => {
+        event.preventDefault()
+        const form_data = new FormData(login_form)
+        const data = Object.fromEntries(form_data)
+        if (validatePassword(data.password)) {
+          const req_data = JSON.stringify(data)
+          try {
+            const result = await fetchDB(req_data)
+            document.cookie = `access_token=${result.result.access_token}; max-age=86400; path=/`
+            alert(result.message)
+            window.location.href = "/Dashboard/dashboard.html"
+          } catch (error) {
+            console.error("Error:", error)
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
